@@ -1,0 +1,66 @@
+# === CREATE: Tenant 1 ===
+curl -X POST http://localhost:8080/api/profiles/777 \
+     -H "X-Tenant: tenant1" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "name": "Elena",
+           "surname": "Georgieva",
+           "education": "MSc in AI & Robotics"
+         }' \
+     -w "\nHTTP Status: %{http_code}\n"
+
+# === CREATE: Tenant 2 ===
+curl -X POST http://localhost:8080/api/profiles/888 \
+     -H "X-Tenant: tenant2" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "name": "Viktor",
+           "surname": "Petrovski",
+           "education": "PhD in Quantum Computing"
+         }' \
+     -w "\nHTTP Status: %{http_code}\n"
+
+# === GET: Tenant 1 ===
+curl -v http://localhost:8080/api/profiles/777 \
+     -H "X-Tenant: tenant1"
+
+# === GET: Tenant 2 ===
+curl -v http://localhost:8080/api/profiles/888 \
+     -H "X-Tenant: tenant2"
+
+# === UPDATE: Tenant 1 ===
+curl -X PUT http://localhost:8080/api/profiles/777 \
+     -H "X-Tenant: tenant1" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "name": "Elena",
+           "surname": "Georgieva-Updated",
+           "education": "Certified Cloud Architect"
+         }' \
+     -w "\nHTTP Status: %{http_code}\n"
+
+# === UPDATE: Tenant 2 ===
+curl -X PUT http://localhost:8080/api/profiles/888 \
+     -H "X-Tenant: tenant2" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "name": "Dr. Viktor",
+           "surname": "Petrovski",
+           "education": "Postdoc in Neural Networks"
+         }' \
+     -w "\nHTTP Status: %{http_code}\n"
+
+# === CROSS-TENANT ACCESS (Should Fail/Empty) ===
+curl -v http://localhost:8080/api/profiles/777 \
+     -H "X-Tenant: tenant2"
+
+# === MISSING X-Tenant (Should Fail) ===
+curl -X GET http://localhost:8080/api/profiles/777 \
+     -w "\nHTTP Status: %{http_code}\n"
+
+# === INVALID Tenant (Should Fail) ===
+curl -X POST http://localhost:8080/api/profiles/999 \
+     -H "X-Tenant: tenant99" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Hack","surname":"Attempt","education":"Jail"}' \
+     -w "\nHTTP Status: %{http_code}\n"
