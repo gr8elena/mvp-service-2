@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5435/user_profile
@@ -15,3 +18,9 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true   # useful when DB already exists
     validate-on-migrate: true
+
+logging:
+  level:
+    feign: DEBUG
+    com.example: DEBUG
+    org.springframework.cloud.openfeign: DEBUG

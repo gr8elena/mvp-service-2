@@ -20,7 +20,7 @@ public class TenantFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpReq = (HttpServletRequest) req;
-        String tenant = httpReq.getHeader("X-Tenant");
+        String tenant = httpReq.getHeader("X-Tenant-Id");
         if (tenant == null || !tenant.matches("tenant1|tenant2")) {
             ((HttpServletResponse) res).sendError(400, "Invalid X-Tenant");
             return;
