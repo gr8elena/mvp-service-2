@@ -20,12 +20,6 @@ public class UserProfile {
     @Column(name = "user_id", nullable = false, updatable = false)
     private Long userId;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String surname;
-
     private String education;
 
     @Column(name = "created_at", updatable = false)

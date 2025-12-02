@@ -2,10 +2,9 @@ package com.example.mvp_service_2.service.impl;
 
 import com.example.mvp_service_2.config.multitenant.TenantContext;
 import com.example.mvp_service_2.model.UserProfile;
+import com.example.mvp_service_2.records.CreateUserProfile;
 import com.example.mvp_service_2.repository.UserProfileRepository;
 import com.example.mvp_service_2.service.UserProfileService;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     private String tenant() {
-        return TenantContext.getTenant(); // "tenant1" or "tenant2"
+        return TenantContext.getTenant();
     }
 
     @Override
@@ -33,22 +32,21 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile create(Long userId, String name, String surname, String education) {
+    public UserProfile create(CreateUserProfile request) {
         if (tenant().equals("tenant1")) {
-            repo.createTenant1(userId, name, surname, education);
+            repo.createTenant1(request.userId(), request.education());
         } else {
-            repo.createTenant2(userId, name, surname, education);
+            repo.createTenant2(request.userId(), request.education());
         }
-        return get(userId).orElseThrow();
+        return get(request.userId()).orElseThrow();
     }
 
     @Override
-    public UserProfile update(Long userId, String name, String surname, String education) {
-        int updated = tenant().equals("tenant1")
-                ? repo.updateTenant1(userId, name, surname, education)
-                : repo.updateTenant2(userId, name, surname, education);
-
-        if (updated == 0) throw new RuntimeException("Profile not found");
-        return get(userId).orElseThrow();
+    public void delete(Long userId) {
+        if (tenant().equals("tenant1")) {
+            repo.deleteByUserIdTenant1(userId);
+        } else {
+            repo.deleteByUserIdTenant2(userId);
+        }
     }
 }
